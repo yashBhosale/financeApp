@@ -1,6 +1,6 @@
 <template>
 <span v-on:click="hello">
-    | {{rowId}}, {{colId}}
+    | {{value}}
 </span>
 
 </template>
@@ -18,7 +18,7 @@ export default {
   
     methods:{
         hello: function(){ 
-            this.$emit('lol', this.message);
+            this.$emit('clicked', this.rowId, this.colId);
         }
 
     }
