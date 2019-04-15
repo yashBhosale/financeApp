@@ -15,11 +15,6 @@ export default {
     HelloWorld,
     TicTacToe
   },
-  data: function () {
-    return {
-      m1:0
-    }
-  },
 
 }
 </script>

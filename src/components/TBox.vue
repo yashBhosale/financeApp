@@ -1,6 +1,6 @@
 <template>
 <span v-on:click="hello">
-    {{data}}
+    | {{rowId}}, {{colId}}
 </span>
 
 </template>
@@ -10,11 +10,10 @@ export default {
     name: 'TBox',
     props: {
         value: String,
-    },
-    data: function(){
-        return {
-            data: ''
-        }
+        id: Number,
+        rowId: Number,
+        colId: Number
+
     },
   
     methods:{
