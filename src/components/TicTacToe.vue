@@ -5,7 +5,7 @@
             set it equal to a data field at this level. Thus, when 
             the data field is changed, the prop is changed and the element is re-rendered
             This is how data gets pushed downwards -->
-        <TBox v-for="(box, colIndex) in row" v-bind:key="colIndex" @clicked="hello" :rowId=rowIndex :colId=colIndex :value=grid[rowIndex][colIndex] ></TBox>
+        <TBox v-for="(box, colIndex) in row" v-bind:key="colIndex" @clicked="hello" :rowId=rowIndex :colId=colIndex :value=grid[rowIndex][colIndex]  style="font-weight:bold"></TBox>
     </div>
 </div>
 </template>
@@ -35,10 +35,10 @@ export default {
     methods:{
         hello: function(rowId, colId){
             
-            if (this.grid[rowId][colId] == '_')
+            if (this.grid[rowId][colId] == '_'){
                 this.$set(this.grid[rowId], colId, this.turn );
-
-            this.turn = (this.turn == 'x') ? 'o' : 'x' ; 
+                this.turn = (this.turn == 'x') ? 'o' : 'x' ; 
+            }
         }
 
     }
