@@ -31,6 +31,7 @@
 
 <script>
 import Multiselect from 'vue-multiselect'
+import * as dbConnector from "../assets/Database/database.js"
 
 export default {
     name: 'DatabaseTable',
@@ -38,14 +39,23 @@ export default {
         Multiselect
     },
     methods:{
-        addToTable (selectedOption) {
-            let temp = this.transactionBank.filter(transaction => transaction.category == selectedOption)     
+        async addToTable (selectedOption) {
+            this.searchSettings.categories.add(selectedOption)  
+            let temp = await dbConnector.fetch(this.searchSettings)
+            // This is O(nlgn), I couldn't really find a faster way to do it even though it feels like there should be one.
+            // Although, space-time paradox I guess
             temp.map(transaction => this.transactions.push(transaction))
+            this.transactions = this.transactions.sort((a,b) => a.id - b.id)
+            
         },
+
+        // replaces the transactions list with a list that is the same, but doesn't have any of the 
+        // items from the selected option. Apparently vue is really good at quickly re-rendering
+        // lists that have only minor difference so this is probably not a performance issue? 
         removeFromTable(selectedOption) {
 
-            let temp = this.transactionBank.filter(transaction => transaction.category == selectedOption)
-            temp.map(transaction => this.transactions.pop(transaction))   
+            this.transactions = this.transactions.filter(transaction => transaction.category != selectedOption)
+            this.searchSettings.categories.delete(selectedOption)
         }
 
     },
@@ -57,48 +67,18 @@ export default {
                 {text: "Amount", value: "amount"},
                 {text: "date", value: "date"},
             ],
-            transactions:[
-                
-            ],
-            transactionBank: [
-                {
-                    id:1,
-                    category: "Dance",
-                    transaction_date: new Date(),
-                    amount:5
-                },
-                {
-                    id:2,
-                    category: "Class",
-                    transaction_date:  new Date(),
-                    amount:1
-                },
-                {
-                    id:3,
-                    category: "Dance",
-                    transaction_date:  new Date(),
-                    amount:1
-                },
-                {
-                    id:4,
-                    category: "Dance",
-                    transaction_date:  new Date(),
-                    amount:1
-                },
-                {
-                    id:5,
-                    category: "Water Bottle",
-                    transaction_date:  new Date(),
-                    amount:1
-                },
-                {
-                    id:6,
-                    category: "Class",
-                    transaction_date:  new Date(),
-                    amount:1
-                }
-            ],
+            // this is necessary- it's what holds the current list that's being
+            transactions:[],
+
             value: [],
+            // searchsettings doesn't need to be DOM-reactive
+            searchSettings: {
+                categories: new Set([]),
+                amount_min: 0,
+                amount_max: Number.MAX_VALUE,
+                date_min: 0,
+                date_max: Number.MAX_VALUE
+            },
             options: [
                 'Dance',
                 'Class',
